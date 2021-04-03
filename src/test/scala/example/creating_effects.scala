@@ -13,8 +13,8 @@ class creating_effects extends AnyFunSuite with example.io {
   }
 
   test("fail") {
-    val f1 = ZIO.fail("uh oh!"); f1.unsafeTry() pipe println
-    val f2 = Task.fail(new Exception("uh oh!")); f2.unsafeTry() pipe println
+    val f1 = ZIO.fail("uh oh!"); f1.unsafeTry()
+    val f2 = Task.fail(new Exception("uh oh!")); f2.unsafeTry()
   }
 
   test("option") {
