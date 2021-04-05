@@ -6,7 +6,7 @@ import cats.implicits._
 import zio._
 
 class basic_operations extends AnyFunSuite with example.io {
-  test(":exec") {
+  test("") {
     val succeed: UIO[Int] = IO.succeed(21).map(_ * 2); succeed.unsafeTry() pipe println
     val failed: IO[Exception, Unit] = IO.fail("no!").mapError(msg => new Exception(msg)); failed.unsafeTry()
     ZIO.fail("uh oh!").unsafeTry()
@@ -17,6 +17,22 @@ class basic_operations extends AnyFunSuite with example.io {
     def putStrLn(line: String): UIO[Unit] = ZIO.effectTotal(println(line)) //; putStrLn("aaa").unsafeTry()
     val sequenced = getStrLn.flatMap(input => putStrLn(s"you entered: $input")) //; sequenced.unsafeTry()
     IO.fail(new Exception("failed flatMap")).flatMap(input => putStrLn(s"you entered: $input")).unsafeTry()
+
+    (for {
+      s <- ZIO.fromOption("a".some)
+      _ <- putStrLn(s)
+    } yield s).unsafeTry() pipe println
+    (for {
+      s <- ZIO.fromOption("a".some)
+      _ <- ZIO.fromOption(None)
+      _ <- putStrLn(s)
+    } yield s).unsafeTry()
+    (for {
+      s <- ZIO.fromOption("a".some)
+      _ <- ZIO.fromEither(Left(0))
+      _ <- ZIO.fromOption(None)
+      _ <- putStrLn(s)
+    } yield s).unsafeTry()
 
     val zipped: UIO[(String, Int)] = ZIO.succeed("aaa").zip(ZIO.succeed(2)); zipped.unsafeTry() pipe println
     val zipRight1 = putStrLn("what is your name?").zipRight(getStrLn) //; zipRight1.unsafeTry() pipe println
